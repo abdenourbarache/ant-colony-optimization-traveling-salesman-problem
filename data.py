@@ -1,4 +1,4 @@
-initialPheromoneLevel = (0.01)
+initialPheromoneLevel = (1)
 
 graph= {
     'a' : [{

@@ -34,11 +34,12 @@ import functions
 import data
 
 #Graph (list of the cities, their neighbors, the distance and pheromone level between each neighbors)
-graph = data.graph15
+graph = data.graph
 graphCopy = graph.copy()
 #algorithm parameters
-startCity, evaporationRate, antsNumber, a, b, bestTours, reinforcementFactor = 'a', 0.5, 100000, 1, 1, [], 1
-
+startCity, evaporationRate, antsNumber, a, b, bestTours = 'a', 0.5, 10000, 1, 1, []
+#parameter used to inmprove aco performances
+asParameter, acsParameter = 4, .3
 for i in range(0, antsNumber):
     currentCity = startCity
     visitedCities = [startCity]
@@ -47,7 +48,7 @@ for i in range(0, antsNumber):
     while(len(visitedCities) < len(graph) and isHamiltonian):
         candidateCities = functions.getCandidateCities(graph.get(currentCity), visitedCities)
         if len(candidateCities) > 0 :
-            nextCity = functions.getNextCity(candidateCities, a, b)
+            nextCity = functions.getNextCity(candidateCities, a, b, acsParameter)
             currentCity = nextCity.get('name')
             totalDistance += nextCity.get('distance')
             visitedCities.append(currentCity)
@@ -69,7 +70,7 @@ for i in range(0, antsNumber):
                     found = True
             if found == False:
                 bestTours.append({'name': visitedCities,'total distance': totalDistance, 'count' : 1}) 
-            functions.updatePheromones(graph, graphCopy, totalDistance, visitedCities, evaporationRate, bestTours, reinforcementFactor)
+            functions.updatePheromones(graph, graphCopy, totalDistance, visitedCities, evaporationRate, bestTours, asParameter)
 
 print('----------------------')
 bestTours.sort(key = lambda x: x['count'], reverse=False)
