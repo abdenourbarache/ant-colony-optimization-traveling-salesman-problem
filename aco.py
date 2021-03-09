@@ -34,7 +34,8 @@ import functions
 import data
 
 #Graph (list of the cities, their neighbors, the distance and pheromone level between each neighbors)
-graph = data.graph
+graph = data.graph15
+graphCopy = graph.copy()
 #algorithm parameters
 startCity, evaporationRate, antsNumber, a, b, bestTours, reinforcementFactor = 'a', 0.5, 100000, 1, 1, [], 1
 
@@ -68,7 +69,7 @@ for i in range(0, antsNumber):
                     found = True
             if found == False:
                 bestTours.append({'name': visitedCities,'total distance': totalDistance, 'count' : 1}) 
-            functions.updatePheromones(graph, totalDistance, visitedCities, evaporationRate, bestTours, reinforcementFactor)
+            functions.updatePheromones(graph, graphCopy, totalDistance, visitedCities, evaporationRate, bestTours, reinforcementFactor)
 
 print('----------------------')
 bestTours.sort(key = lambda x: x['count'], reverse=False)

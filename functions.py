@@ -14,11 +14,13 @@ def getCandidateCities(candidatesCities, alreadyVisitedCities):
 
 def getNextCity(candidatesCities, a, b):
     totalProbabilities = 0.0
-    for city in candidatesCities:
-        totalProbabilities += (city.get('pheromones')**a * (1/city.get('distance'))**b)
     edegsProbabilities = []
-    for city in candidatesCities:
-        edegsProbabilities.append((city.get('pheromones')**a * (1/city.get('distance'))**b)/ totalProbabilities)
+    if len(candidatesCities) == 1 : edegsProbabilities.append(1)
+    else :
+        for city in candidatesCities:
+            totalProbabilities += (city.get('pheromones')**a * (1/city.get('distance'))**b)
+        for city in candidatesCities:
+            edegsProbabilities.append((city.get('pheromones')**a * (1/city.get('distance'))**b)/ totalProbabilities)
     cummulativeSum(edegsProbabilities)
     edegsProbabilities.append(0)
     randomNum = random()
@@ -28,10 +30,10 @@ def getNextCity(candidatesCities, a, b):
         indexX -= 1
     return candidatesCities[indexX]
 
-def updateEdgePheromone(citiesList, city, pheromoneToAdd):
+def updateEdgePheromone(citiesList, city, pheromoneToAdd, fact = 1):
     for c in citiesList:
         if c.get('name') == city:
-            c['pheromones'] += pheromoneToAdd
+            c['pheromones'] += pheromoneToAdd*fact
 
 def pheromoneEvaporation(graph, evaporationRate):
     for c1 in graph:
@@ -39,7 +41,6 @@ def pheromoneEvaporation(graph, evaporationRate):
             c2['pheromones'] = (1 - evaporationRate)*c2['pheromones']
 
 def globalBestReinforcement(graph, tours, reinforcementFactor):
-    tours.sort(key = lambda x: x['total distance'], reverse=False)
     bestTour = tours[0].get('name')
     totalDistance = tours[0].get('total distance')
     for i in range(0, len(bestTour)-1):
@@ -47,15 +48,27 @@ def globalBestReinforcement(graph, tours, reinforcementFactor):
         updateEdgePheromone(graph.get(bestTour[i+1]) , bestTour[i],  reinforcementFactor* 1/totalDistance)
 
 
-def updatePheromones(graph,totalDistance, visitedCities, evaporationRate, tours, reinforcementFactor):
+def updatePheromones(graph, graphCopy, totalDistance, visitedCities, evaporationRate, tours, reinforcementFactor):
+    tours.sort(key = lambda x: x['total distance'], reverse=False)
+    graph = graphCopy.copy()
+    w = 5
     #evaporization 
-    pheromoneEvaporation(graph, evaporationRate)
+    #pheromoneEvaporation(graph, evaporationRate)
     #deposit pheromones
-    for i in range(0, len(visitedCities)-1):
-        updateEdgePheromone(graph.get(visitedCities[i]) , visitedCities[i+1], 1/totalDistance)
-        updateEdgePheromone(graph.get(visitedCities[i+1]) , visitedCities[i], 1/totalDistance)
+    w = 5 if len(tours) > 5 else len(tours)
+    for j in range(0, w - 1):
+        pheromoneEvaporation(graph, evaporationRate)
+        r = j + 1
+        for i in range(0, len(tours[j]['name'])-1):
+            updateEdgePheromone(graph.get(tours[j]['name'][i]) , tours[j]['name'][i+1], 1/tours[j]['total distance'],w - r)
+            updateEdgePheromone(graph.get(tours[j]['name'][i+1]) , tours[j]['name'][i], 1/tours[j]['total distance'],w - r)
+    globalBestReinforcement(graph, tours, w)
+
+    # for i in range(0, len(visitedCities)-1):
+    #     updateEdgePheromone(graph.get(visitedCities[i]) , visitedCities[i+1], 1/totalDistance)
+    #     updateEdgePheromone(graph.get(visitedCities[i+1]) , visitedCities[i], 1/totalDistance)
     #global best tour reinforcement
-    globalBestReinforcement(graph, tours, reinforcementFactor)
+    #globalBestReinforcement(graph, tours, reinforcementFactor)
     
 def cummulativeSum(probabilities):
     probabilities.reverse();
