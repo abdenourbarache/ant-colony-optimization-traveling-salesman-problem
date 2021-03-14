@@ -1,4 +1,5 @@
 from  random import random
+from random import randrange
 
 def removeCityIfExist(citiesList, city):
     for c in citiesList:
@@ -21,6 +22,7 @@ def getNextCity(candidatesCities, a, b, acsParameter):
         else :
             for city in candidatesCities:
                 totalProbabilities += (city.get('pheromones')**a * (1/city.get('distance'))**b)
+            if totalProbabilities == 0 : return candidatesCities[randrange(len(candidatesCities))]
             for city in candidatesCities:
                 edegsProbabilities.append((city.get('pheromones')**a * (1/city.get('distance'))**b)/ totalProbabilities)
         cummulativeSum(edegsProbabilities)

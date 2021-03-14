@@ -34,11 +34,11 @@ import functions
 import data
 
 #Graph (list of the cities, their neighbors, the distance and pheromone level between each neighbors)
-graph = data.graph
+graph = data.graphGR17
 graphCopy = graph.copy()
 #algorithm parameters
-startCity, evaporationRate, antsNumber, a, b, bestTours = 'a', 0.5, 10000, 1, 1, []
-#parameter used to inmprove aco performances
+startCity, evaporationRate, antsNumber, a, b, bestTours = '633', 0.5, 50000, 1, 1, []
+#parameter used to improve aco performances
 asParameter, acsParameter = 4, .3
 for i in range(0, antsNumber):
     currentCity = startCity
@@ -76,3 +76,5 @@ print('----------------------')
 bestTours.sort(key = lambda x: x['count'], reverse=False)
 for tour in bestTours:
     print(f'{tour} \n')
+bestTours.sort(key = lambda x: x['total distance'], reverse=False)
+print(bestTours[0])

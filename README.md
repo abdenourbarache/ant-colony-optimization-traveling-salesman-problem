@@ -9,7 +9,7 @@ This project was inspired from : https://link.springer.com/chapter/10.1007/0-306
 
 This project is built in Python and consist of three files :
 
-* data.py, contains two graphes examples (you can add your own).
+* data.py, contains two graphes examples ( default is the benchmark GR17 which is a set of 17 cities, from TSPLIB ).
 * functions.py, which have the essential functions used in the ACO algorithm.
 * aco.py, the main file which contains the ACO global parameters.
 
